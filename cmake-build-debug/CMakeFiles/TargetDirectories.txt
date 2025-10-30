@@ -1,0 +1,3 @@
+C:/Users/ashho/CLionProjects/P2b/cmake-build-debug/CMakeFiles/P2b.dir
+C:/Users/ashho/CLionProjects/P2b/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/ashho/CLionProjects/P2b/cmake-build-debug/CMakeFiles/rebuild_cache.dir
