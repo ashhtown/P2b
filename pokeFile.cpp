@@ -192,3 +192,10 @@ void display(vector<Pokemon>& Pokedex, string& name) {
         cout << "Not found. Try again." << endl;
     }
 }
+
+// using battle data
+void compare(string& pokemon1, string& pokemon2) {
+    // enter pokemon names in separate fields, press one button to enter
+    // EITHER compare win rates or team usage rates from over 100,000 battles
+
+}
