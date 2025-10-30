@@ -24,18 +24,17 @@ struct Pokemon {
     string ability1;
     string ability2;
     string abilityHidden;
-    string ev;
+    string ev; // effort value
     string gender; // "M/F (percentage)"
     string eg1; // egg group 1
     string eg2; // egg group 2
-    int catchNum; // not entirely sure what this is atm
-    string evolution; // what lvl they evolve at
-    //int generation;
-    //bool legendary;
+    string catchNum; // not entirely sure what this is atm
+    string evolution; // condition/s to evolve
+    int generation;
 };
 
-void readFiles() {
-    ifstream pokemonFile("pokemon.csv");
+vector<Pokemon> readFiles() {
+    ifstream pokemonFile("../pokemon.csv");
     string line;
     vector<Pokemon> Pokedex; // store pokemon objects (like a pokedex)
     getline(pokemonFile, line); // header
@@ -47,32 +46,40 @@ void readFiles() {
 
         // read all data and assign to pokemon object
         // number
+        //cout << "num" << endl;
         getline(stream, temp, ',');
         pokemon.num = stoi(temp);
         // name
         getline(stream, pokemon.name, ',');
 
         // hp
+        //cout << "hp" << endl;
         getline(stream, temp, ',');
         pokemon.hp = stoi(temp);
         // attack
+        //cout << "atk" << endl;
         getline(stream, temp, ',');
         pokemon.atk = stoi(temp);
         // def
+        //cout << "def" << endl;
         getline(stream, temp, ',');
         pokemon.def = stoi(temp);
 
         // SP attack
+        //cout << "spA" << endl;
         getline(stream, temp, ',');
         pokemon.spAtk = stoi(temp);
         // SP def
+        //cout << "spD" << endl;
         getline(stream, temp, ',');
         pokemon.spDef = stoi(temp);
         // speed
+        //cout << "spd" << endl;
         getline(stream, temp, ',');
         pokemon.spd = stoi(temp);
 
         // total
+        //cout << "total" << endl;
         getline(stream, temp, ',');
         pokemon.total = stoi(temp);
 
@@ -90,6 +97,12 @@ void readFiles() {
 
         // EV
         getline(stream, pokemon.ev, ',');
+        if (pokemon.ev[0] == '"') {
+            getline(stream, temp, '"');
+            pokemon.ev += temp;
+            pokemon.ev.erase(0,1);
+            getline(stream, temp, ',');
+        }
         // gender
         getline(stream, pokemon.gender, ',');
         // egg group 1
@@ -98,20 +111,74 @@ void readFiles() {
         getline(stream, pokemon.eg2, ',');
 
         // catch
-        getline(stream, temp, ',');
-        pokemon.catchNum = stoi(temp);
-        // evolves at
+        //cout << "catch" << endl;
+        getline(stream, pokemon.catchNum, ',');
+        // evolution condition
         getline(stream, pokemon.evolution, ',');
 
-        /* generation
-        getline(stream, temp, ',');
-        pokemon.generation = stoi(temp);
-        // legendary
-        getline(stream, temp, ',');
-        if (temp == "true"){pokemon.legendary = true;}
-        else{pokemon.legendary = false;}*/
+        // generation (if there's a better way to do this sorry im tired lol)
+        if (pokemon.num <= 151) {
+            pokemon.generation = 1;
+        }else if (pokemon.num <= 251) {
+            pokemon.generation = 2;
+        }else if (pokemon.num <= 386) {
+            pokemon.generation = 3;
+        }else if (pokemon.num <= 493) {
+            pokemon.generation = 4;
+        }else if (pokemon.num <= 649) {
+            pokemon.generation = 5;
+        }else if (pokemon.num <= 721) {
+            pokemon.generation = 6;
+        }else if (pokemon.num <= 809) {
+            pokemon.generation = 7;
+        }else if (pokemon.num <= 905) {
+            pokemon.generation = 8;
+        }else {
+            pokemon.generation = 9;
+        }
 
         // add your now initialized pokemon to the Pokedex vector!
         Pokedex.push_back(pokemon);
+    }
+    pokemonFile.close();
+    return Pokedex;
+}
+
+void display(vector<Pokemon>& Pokedex, string& name) {
+    bool found = false;
+    // this is where we would search for the pokemon using data structure
+    // and sort using algorithm to display best battle stats (haven't found a data set for yet)
+    for (Pokemon pokemon : Pokedex) {
+        if (pokemon.name == name) {
+            cout << "Pokedex Entry no. " << pokemon.num;
+            cout << "     Generation: " << pokemon.generation << endl;
+            cout << "Name: " << pokemon.name << endl;
+            cout << "Type: " << pokemon.type1;
+            if (!pokemon.type2.empty()) {
+                cout << "/" << pokemon.type2;
+            }
+            cout << endl;
+            cout << "HP   ATK   DEF   SpA   SpD   Spe   TOTAL" << endl;
+            cout << pokemon.hp << "   " << pokemon.atk << "    " << pokemon.def << "    " << pokemon.spAtk << "    " << pokemon.spDef << "    " << pokemon.spd << "     " << pokemon.total << endl;
+            cout << "Ability 1: " << pokemon.ability1;
+            if (!pokemon.ability2.empty()) {
+                cout << "/" << pokemon.ability2;
+            }if (!pokemon.abilityHidden.empty()) {
+                cout << "      Hidden: " << pokemon.abilityHidden;
+            }
+            cout << endl;
+            cout << "Effort Value: " << pokemon.ev << "   Gender Distribution: " << pokemon.gender << endl;
+            cout << "Egg Group: " << pokemon.eg1;
+            if (!pokemon.eg2.empty()) {
+                cout << "/" << pokemon.eg2;
+            }
+            cout << endl;
+            cout << "Catch: " << pokemon.catchNum << endl;
+            cout << "Evolve: " << pokemon.evolution << endl;
+            found = true;
+        }
+    }
+    if (!found) {
+        cout << "Not found. Try again." << endl;
     }
 }
