@@ -31,6 +31,7 @@ struct Pokemon {
     string catchNum; // not entirely sure what this is atm
     string evolution; // condition/s to evolve
     int generation;
+    string region; // first region in which it appears
 };
 
 vector<Pokemon> readFiles() {
@@ -111,7 +112,6 @@ vector<Pokemon> readFiles() {
         getline(stream, pokemon.eg2, ',');
 
         // catch
-        //cout << "catch" << endl;
         getline(stream, pokemon.catchNum, ',');
         // evolution condition
         getline(stream, pokemon.evolution, ',');
@@ -119,22 +119,31 @@ vector<Pokemon> readFiles() {
         // generation (if there's a better way to do this sorry im tired lol)
         if (pokemon.num <= 151) {
             pokemon.generation = 1;
+            pokemon.region = "Kanto";
         }else if (pokemon.num <= 251) {
             pokemon.generation = 2;
+            pokemon.region = "Johto";
         }else if (pokemon.num <= 386) {
             pokemon.generation = 3;
+            pokemon.region = "Hoenn";
         }else if (pokemon.num <= 493) {
             pokemon.generation = 4;
+            pokemon.region = "Sinnoh";
         }else if (pokemon.num <= 649) {
             pokemon.generation = 5;
+            pokemon.region = "Unova";
         }else if (pokemon.num <= 721) {
             pokemon.generation = 6;
+            pokemon.region = "Kalos";
         }else if (pokemon.num <= 809) {
             pokemon.generation = 7;
+            pokemon.region = "Alola";
         }else if (pokemon.num <= 905) {
             pokemon.generation = 8;
+            pokemon.region = "Galar";
         }else {
             pokemon.generation = 9;
+            pokemon.region = "Paldea";
         }
 
         // add your now initialized pokemon to the Pokedex vector!
@@ -150,8 +159,9 @@ void display(vector<Pokemon>& Pokedex, string& name) {
     // and sort using algorithm to display best battle stats (haven't found a data set for yet)
     for (Pokemon pokemon : Pokedex) {
         if (pokemon.name == name) {
-            cout << "Pokedex Entry no. " << pokemon.num;
-            cout << "     Generation: " << pokemon.generation << endl;
+            cout << "Pokedex Entry no. " << pokemon.num << endl;
+            cout << "Generation: " << pokemon.generation;
+            cout << "     Region: " << pokemon.region << endl;
             cout << "Name: " << pokemon.name << endl;
             cout << "Type: " << pokemon.type1;
             if (!pokemon.type2.empty()) {
