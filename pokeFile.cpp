@@ -10,6 +10,7 @@ using namespace std;
 // 20 columns
 
 struct Pokemon {
+    string imgURL; // http://www.serebii.net/xy/pokemon/[Pokemon.num].png
     int num;
     string name;
     int hp;
@@ -25,10 +26,10 @@ struct Pokemon {
     string ability2;
     string abilityHidden;
     string ev; // effort value
-    string gender; // "M/F (percentage)"
-    string eg1; // egg group 1
-    string eg2; // egg group 2
-    string catchNum; // not entirely sure what this is atm
+    string gender; // "M/F (percentage)" MAYBE DON'T DISPLAY, IRRELEVANT
+    string eg1; // egg group 1 MAYBE DON'T DISPLAY, IRRELEVANT
+    string eg2; // egg group 2 MAYBE DON'T DISPLAY, IRRELEVANT
+    string catchNum; // MAYBE DONT DISPLAY, IRRELEVANT
     string evolution; // condition/s to evolve
     int generation;
     string region; // first region in which it appears
@@ -196,6 +197,6 @@ void display(vector<Pokemon>& Pokedex, string& name) {
 // using battle data
 void compare(string& pokemon1, string& pokemon2) {
     // enter pokemon names in separate fields, press one button to enter
-    // EITHER compare win rates or team usage rates from over 100,000 battles
+    // list usage rates and best counters from over 100,000 battles
 
 }
