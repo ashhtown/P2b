@@ -10,7 +10,7 @@ using namespace std;
 // 20 columns
 
 struct Pokemon {
-    string imgURL; // http://www.serebii.net/xy/pokemon/[Pokemon.num].png
+    string imgURL; // http://www.serebii.net/xy/pokemon/[Pokemon.num].png  -  have to figure out how to do that in SFML :3
     int num;
     string name;
     int hp;
