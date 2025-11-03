@@ -3,7 +3,8 @@ project(P2b)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(P2b main.cpp
+include_directories(include)
+
+add_executable(P2b
         algo1.cpp
-        algo2.cpp
 )
