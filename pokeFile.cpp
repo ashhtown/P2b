@@ -3,6 +3,7 @@
 #include <sstream>
 #include <vector>
 #include <string>
+#include <map>
 using namespace std;
 
 // Nat,Pokemon,HP,Atk,Def,SpA,SpD,Spe,Total,Type I,Type II,Ability I,Ability II,Hidden Ability,
@@ -10,7 +11,7 @@ using namespace std;
 // 20 columns
 
 struct Pokemon {
-    string imgURL; // http://www.serebii.net/xy/pokemon/[Pokemon.num].png  -  have to figure out how to do that in SFML :3
+    //string imgURL; // http://www.serebii.net/xy/pokemon/[Pokemon.num].png  -  have to figure out how to do that in SFML :3
     int num;
     string name;
     int hp;
@@ -33,14 +34,77 @@ struct Pokemon {
     string evolution; // condition/s to evolve
     int generation;
     string region; // first region in which it appears
+
+    // from gen[N].csv
+    //int rank;
+    double usage;
+
+    // from gen[N]moveset.csv
+    vector<string> moveRates;
+    vector<string> teamRates;
 };
 
-vector<Pokemon> readFiles() {
-    ifstream pokemonFile("../pokemon.csv");
-    string line;
-    vector<Pokemon> Pokedex; // store pokemon objects (like a pokedex)
-    getline(pokemonFile, line); // header
+map<string, double> assignUsage() { // currently gen 1 only
+    ifstream usageFile("../gen1.csv");
+    string line, name;
+    int rank;
+    double usage;
+    getline(usageFile, line); // header
+    map<string, double> stats; // format: <string Name, [rank, usage%]>
+    while (getline(usageFile, line)) {
+        istringstream stream(line);
+        string temp;
+        getline(stream, temp, ',');
+        rank = stoi(temp);
+        getline(stream, name, ',');
+        getline(stream, temp, '%');
+        usage = stod(temp);
+        stats.insert({name, usage});
+    }
+    return stats;
+}
 
+map<string, vector<vector<string>>> readMovesetFiles() { // gen 1 only rn
+    map<string, vector<vector<string>>> moveset; // format: <Name, [ vec1[Moves-Teammates, move usage rates], vec2[Teammates, Checks and Counters, team usage rates] ]
+    ifstream movesetFile("../gen1moveset.csv");
+    string line;
+    while (getline(movesetFile, line)) { // no header
+        istringstream stream(line);
+        string name;
+        vector<string> moveRates;
+        vector<string> teamRates;
+        if (line != "Moves") {
+            //cout << "name: " << line << endl;
+            name = line;
+            getline(movesetFile, line, '\n');
+        }
+        if (line == "Moves") {
+            getline(movesetFile, line, '\n');
+            while (line != "Teammates") {
+                moveRates.push_back(line);
+                getline(movesetFile, line, '\n');
+            }
+            getline(movesetFile, line, '\n');
+            while (line != "Checks and Counters") {
+                teamRates.push_back(line);
+                getline(movesetFile, line, '\n');
+            }
+        }
+        moveset.insert({name, {moveRates, teamRates}});
+        //cout << "inserted " << name << " moveRates and teamRates" << endl;
+    }
+    return moveset;
+}
+
+vector<Pokemon> readPokeFiles() {
+    ifstream pokemonFile("../pokemon.csv");
+    string line, temp;
+
+    vector<Pokemon> Pokedex; // store pokemon objects (like a pokedex)
+    map<string, double> stats = assignUsage();
+    map<string, vector<vector<string>>> moveset = readMovesetFiles();
+
+    getline(pokemonFile, line); // header
     while (getline(pokemonFile, line)) {
         istringstream stream(line);
         string temp;
@@ -146,7 +210,14 @@ vector<Pokemon> readFiles() {
             pokemon.generation = 9;
             pokemon.region = "Paldea";
         }
+        pokemon.usage = stats[pokemon.name];
 
+        for (auto i : moveset) { // O(BAD) TIME
+            if (i.first == pokemon.name) {
+                pokemon.moveRates = i.second[0];
+                pokemon.teamRates = i.second[1];
+            }
+        }
         // add your now initialized pokemon to the Pokedex vector!
         Pokedex.push_back(pokemon);
     }
@@ -169,6 +240,7 @@ void display(vector<Pokemon>& Pokedex, string& name) {
                 cout << "/" << pokemon.type2;
             }
             cout << endl;
+            cout << "Usage Rate: " << pokemon.usage << "%" << endl;
             cout << "HP   ATK   DEF   SpA   SpD   Spe   TOTAL" << endl;
             cout << pokemon.hp << "   " << pokemon.atk << "    " << pokemon.def << "    " << pokemon.spAtk << "    " << pokemon.spDef << "    " << pokemon.spd << "     " << pokemon.total << endl;
             cout << "Ability 1: " << pokemon.ability1;
@@ -186,6 +258,16 @@ void display(vector<Pokemon>& Pokedex, string& name) {
             cout << endl;
             cout << "Catch: " << pokemon.catchNum << endl;
             cout << "Evolve: " << pokemon.evolution << endl;
+
+            cout << "\n" << "Moves: " << endl;
+            for (const auto& i : pokemon.moveRates) {
+                cout << i << endl;
+            }
+            cout << "\n" << "Teammates: " << endl;
+            for (const auto& i : pokemon.teamRates) {
+                cout << i << endl;
+            }
+
             found = true;
         }
     }

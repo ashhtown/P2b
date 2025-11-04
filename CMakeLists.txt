@@ -6,5 +6,5 @@ set(CMAKE_CXX_STANDARD 14)
 include_directories(include)
 
 add_executable(P2b
-        algo1.cpp
+        main.cpp
 )
