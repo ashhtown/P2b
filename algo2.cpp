@@ -12,7 +12,7 @@
 #include "pokemon.h"
 using namespace std;
 
-// Graph class representing Pokémon type effectiveness
+// Graph class representing Pokémon type effectiveness.
 class TypeGraph {
 private:
     unordered_map<string, vector<pair<string, float>>> adjList; // {attackerType -> [(defenderType, multiplier)]}
