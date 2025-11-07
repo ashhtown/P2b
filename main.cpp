@@ -9,7 +9,7 @@ int main() {
     while (searching) {
         string input;
         cout << "Search for a Pokemon! Enter 'done' to exit." << endl;
-        cin >> input;
+        getline(cin, input);
         if (input == "done") {
             cout << "thank you for using battledex" << endl;
             searching = false;
