@@ -7,8 +7,9 @@
 #include <string>
 #include <algorithm>
 #include "pokemon.h"
+//#include "pokeFile.cpp"
 
-// Sample Pokémon data to simulate input from a CSV or database
+//Sample Pokémon data to simulate input from a CSV or database
 std::vector<Pokemon> generateTestData() {
     return {
         {"Pikachu", "Electric", "", 55, 90, 0.0, 0.21, 1},
