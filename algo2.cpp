@@ -61,7 +61,7 @@ vector<Pokemon> generateTestData() {
 }
 
 int main() {
-    // Build the type effectiveness graph
+    // Build the type effectiveness graph.
     TypeGraph g;
     g.addEdge("Water", "Fire", 2.0);
     g.addEdge("Electric", "Water", 2.0);
