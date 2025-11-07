@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <algorithm>
 #include <string>
 #include <map>
 using namespace std;
@@ -45,21 +46,25 @@ struct Pokemon {
 };
 
 map<string, double> assignUsage() { // currently gen 1 only
-    ifstream usageFile("../gen1.csv");
-    string line, name;
-    int rank;
-    double usage;
-    getline(usageFile, line); // header
-    map<string, double> stats; // format: <string Name, [rank, usage%]>
-    while (getline(usageFile, line)) {
-        istringstream stream(line);
-        string temp;
-        getline(stream, temp, ',');
-        rank = stoi(temp);
-        getline(stream, name, ',');
-        getline(stream, temp, '%');
-        usage = stod(temp);
-        stats.insert({name, usage});
+    map<string, double> stats; // format: <string Name, usage%]>
+    vector<string> gens = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
+    for (const auto& gen : gens) {
+        string filename = "../data CSVs/gen" + gen + ".csv";
+        ifstream usageFile(filename);
+        string line, name;
+        int rank;
+        double usage;
+        getline(usageFile, line); // header
+        while (getline(usageFile, line)) {
+            istringstream stream(line);
+            string temp;
+            getline(stream, temp, ',');
+            rank = stoi(temp);
+            getline(stream, name, ',');
+            getline(stream, temp, '%');
+            usage = stod(temp);
+            stats.insert({name, usage});
+        }
     }
     return stats;
 }
@@ -67,84 +72,88 @@ map<string, double> assignUsage() { // currently gen 1 only
 map<string, vector<vector<string>>> readMovesetFiles() { // gen 1 only rn
     map<string, vector<vector<string>>> moveset; // format: <Name, [ vec1[Moves-Teammates, move usage rates], vec2[Teammates, Checks and Counters, team usage rates] ]
     vector<string> gens = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
-    //string genFile = "../POKEDATA - gen" + gens[i] + "moveset.csv"
-    ifstream movesetFile("../POKEDATA - gen1moveset.csv");
-    string line, temp; // temp fix for name issue
-    int ctLines = 0;
-    while (getline(movesetFile, line)) { // no header
-        istringstream stream(line);
-        string name;
+    for (const auto& gen : gens) {
+        string filename = "../data CSVs/POKEDATA - gen" + gen + "moveset.csv";
+        cout << filename << endl;
+        ifstream movesetFile(filename);
+        string line, temp; // temp fix for name issue
+        int ctLines = 0;
+        while (getline(movesetFile, line)) {
+            // no header
+            istringstream stream(line);
+            string name;
 
-        // all below go into movesetData;
-        vector<vector<string>> movesetData;
-        vector<string> ctWtVc, abilities, items, spreads, moveRates, teraTypes, teamRates, checksCounters;
+            // all below go into movesetData;
+            vector<vector<string>> movesetData;
+            vector<string> ctWtVc, abilities, items, spreads, moveRates, teraTypes, teamRates, checksCounters;
 
-        if (ctLines > 0) {
-            name = temp;
-        }else {
-            name = line;
-            ctLines++;
+            if (ctLines > 0) {
+                name = temp;
+            }else {
+                name = line;
+                ctLines++;
+                getline(movesetFile, line, '\n');
+            }
+            while (line != "Abilities") { // 3 lines after name
+                ctWtVc.push_back(line);
+                getline(movesetFile, line, '\n');
+            }
+            movesetData.push_back(ctWtVc);
+
+            getline(movesetFile, line, '\n'); // "Abilities"
+            while (line != "Items") {
+                abilities.push_back(line);
+                getline(movesetFile, line, '\n');
+            }
+            movesetData.push_back(abilities);
+
+            getline(movesetFile, line, '\n'); // "Items"
+            while (line != "Spreads") {
+                items.push_back(line);
+                getline(movesetFile, line, '\n');
+            }
+            movesetData.push_back(items);
+
+            getline(movesetFile, line, '\n'); // "Spreads"
+            while (line != "Moves") {
+                spreads.push_back(line);
+                getline(movesetFile, line, '\n');
+            }
+            movesetData.push_back(spreads);
+
+            getline(movesetFile, line, '\n'); // "Moves"
+            while (line != "Tera Types") {
+                moveRates.push_back(line);
+                getline(movesetFile, line, '\n');
+            }
+            movesetData.push_back(moveRates);
+
+            getline(movesetFile, line, '\n'); // "Tera Types"
+            while (line != "Teammates") {
+                teraTypes.push_back(line);
+                getline(movesetFile, line, '\n');
+            }
+            movesetData.push_back(teraTypes);
+
+            getline(movesetFile, line, '\n'); // "Teammates"
+            while (line != "Checks and Counters") {
+                teamRates.push_back(line);
+                getline(movesetFile, line, '\n');
+            }
+            movesetData.push_back(teamRates);
+
+            // used temp fix here
             getline(movesetFile, line, '\n');
-        }
-        while (line != "Abilities") { // 3 lines after name
-            ctWtVc.push_back(line);
-            getline(movesetFile, line, '\n');
-        }
-        movesetData.push_back(ctWtVc);
+            while (line.find(")") != string::npos) {
+                checksCounters.push_back(line);
+                getline(movesetFile, line, '\n');
+                temp = line;
+            }
 
-        getline(movesetFile, line, '\n'); // "Abilities"
-        while (line != "Items") {
-            abilities.push_back(line);
-            getline(movesetFile, line, '\n');
+            movesetData.push_back(checksCounters);
+
+            moveset.insert({name, movesetData});
         }
-        movesetData.push_back(abilities);
-
-        getline(movesetFile, line, '\n'); // "Items"
-        while (line != "Spreads") {
-            items.push_back(line);
-            getline(movesetFile, line, '\n');
-        }
-        movesetData.push_back(items);
-
-        getline(movesetFile, line, '\n'); // "Spreads"
-        while (line != "Moves") {
-            spreads.push_back(line);
-            getline(movesetFile, line, '\n');
-        }
-        movesetData.push_back(spreads);
-
-        getline(movesetFile, line, '\n'); // "Moves"
-        while (line != "Tera Types") {
-            moveRates.push_back(line);
-            getline(movesetFile, line, '\n');
-        }
-        movesetData.push_back(moveRates);
-
-        getline(movesetFile, line, '\n'); // "Tera Types"
-        while (line != "Teammates") {
-            teraTypes.push_back(line);
-            getline(movesetFile, line, '\n');
-        }
-        movesetData.push_back(teraTypes);
-
-        getline(movesetFile, line, '\n'); // "Teammates"
-        while (line != "Checks and Counters") {
-            teamRates.push_back(line);
-            getline(movesetFile, line, '\n');
-        }
-        movesetData.push_back(teamRates);
-
-        // used temp fix here
-        getline(movesetFile, line, '\n');
-        while (line.find(")") != string::npos) {
-            checksCounters.push_back(line);
-            getline(movesetFile, line, '\n');
-            temp = line;
-        }
-
-        movesetData.push_back(checksCounters);
-
-        moveset.insert({name, movesetData});
     }
     return moveset;
 }
@@ -299,29 +308,36 @@ void display(vector<Pokemon>& Pokedex, string& name) {
                 cout << "/" << pokemon.type2;
             }
             cout << endl;
-            cout << "Usage Rate: " << pokemon.usage << "%" << endl;
+            if (pokemon.usage > 0) {
+                cout << "OU Usage Rate: " << pokemon.usage << "%" << endl;
+            }else {
+                cout << "Usage Rate: 0% in OU tier competitive play." << endl;
+            }
             cout << "HP   ATK   DEF   SpA   SpD   Spe   TOTAL" << endl;
             cout << pokemon.hp << "   " << pokemon.atk << "    " << pokemon.def << "    " << pokemon.spAtk << "    " << pokemon.spDef << "    " << pokemon.spd << "     " << pokemon.total << endl;
             cout << "Ability 1: " << pokemon.ability1;
             if (!pokemon.ability2.empty()) {
-                cout << "/" << pokemon.ability2;
-            }if (!pokemon.abilityHidden.empty()) {
-                cout << "      Hidden: " << pokemon.abilityHidden;
+                cout << endl << "Ability 2:" << pokemon.ability2;
             }
             cout << endl;
-            cout << "Effort Value: " << pokemon.ev << "   Gender Distribution: " << pokemon.gender << endl;
-            cout << "Egg Group: " << pokemon.eg1;
-            if (!pokemon.eg2.empty()) {
-                cout << "/" << pokemon.eg2;
+            if (!pokemon.abilityHidden.empty()) {
+                cout << "Hidden Ability: " << pokemon.abilityHidden;
+            }else {
+                cout << "No Hidden Ability" << endl;
             }
             cout << endl;
-            cout << "Catch: " << pokemon.catchNum << endl;
-            cout << "Evolve: " << pokemon.evolution << endl;
+            //cout << "Effort Value: " << pokemon.ev << "   Gender Distribution: " << pokemon.gender << endl;
+            //cout << "Egg Group: " << pokemon.eg1;
+            // if (!pokemon.eg2.empty()) {
+            //     cout << "/" << pokemon.eg2;
+            // }
+            //cout << endl << "Catch: " << pokemon.catchNum << endl;
+            //cout << "Evolve: " << pokemon.evolution << endl << endl;
 
             // ctWtVc, abilities, items, spreads, moveRates, teraTypes, teamRates, checksCounters
-            if (!pokemon.movesetData[0].empty()) {
+            if (!pokemon.movesetData[0].empty()) { // if pokemon is used in OU tier (has moveset data)
                 for (int i = 0; i < 3; i++) {
-                    cout << '\n' << pokemon.ctWtVc[i] << endl;
+                    cout << pokemon.ctWtVc[i] << endl;
                 }
                 cout << "\n" << "Moves: " << endl;
                 for (const auto& i : pokemon.moveRates) {
@@ -333,6 +349,7 @@ void display(vector<Pokemon>& Pokedex, string& name) {
                 }
                 cout << "\n" << "Checks and Counters: " << endl;
                 for (const auto& i : pokemon.checksCounters) {
+                    //replace(i.begin(), i.end(), "±", "+/-");
                     cout << i << endl;
                 }
             }
