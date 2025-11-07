@@ -5,13 +5,19 @@ using namespace std;
 int main() {
     // this is just me testing
     vector<Pokemon> mons = readPokeFiles();
-    string input;
-    cout << "Search for a Pokemon: " << endl;
-    cin >> input;
-    cout << "the program is going to find that pokemon now:" << endl;
-    display(mons, input);
-    cout << "\n" << "done" << endl;
-    //map<string, vector<vector<string>>> moveset = readMovesetFiles();
+    bool searching = true;
+    while (searching) {
+        string input;
+        cout << "Search for a Pokemon! Enter 'done' to exit." << endl;
+        cin >> input;
+        if (input == "done") {
+            cout << "thank you for using battledex" << endl;
+            searching = false;
+        }else {
+            cout << "searching for " << input << endl;
+            display(mons, input);
+        }
+    }
 
     return 0;
 }
