@@ -43,6 +43,12 @@ struct Pokemon {
     // from gen[N]moveset.csv
     vector<string> ctWtVc, abilities, items, spreads, moveRates, teraTypes, teamRates, checksCounters;
     vector<vector<string>> movesetData= {ctWtVc, abilities, items, spreads, moveRates, teraTypes, teamRates, checksCounters};
+
+    // functions
+    // For max heap comparison
+    bool operator<(const Pokemon& other) const {
+        return usage < other.usage;
+    }
 };
 
 map<string, double> assignUsage() { // currently gen 1 only
@@ -360,9 +366,108 @@ void display(vector<Pokemon>& Pokedex, string& name) {
     }
 }
 
-// using battle data
-void compare(string& pokemon1, string& pokemon2) {
-    // enter pokemon names in separate fields, press one button to enter
-    // list usage rates and best counters from over 100,000 battles
 
+
+// SORTING ALGORITHMS
+
+// Filters Pokémon by generation
+std::vector<Pokemon> filterByGeneration(const std::vector<Pokemon>& all, int gen) {
+    std::vector<Pokemon> result;
+    for (const auto& p : all) {
+        if (p.generation == gen)
+            result.push_back(p);
+    }
+    return result;
+}
+
+// QuickSort helper for partitioning based on usage rate
+int partition(std::vector<Pokemon>& arr, int low, int high) {
+    float pivot = arr[high].usage;
+    int i = low - 1;
+    for (int j = low; j < high; ++j) {
+        if (arr[j].usage > pivot) {
+            ++i;
+            std::swap(arr[i], arr[j]);
+        }
+    }
+    std::swap(arr[i + 1], arr[high]);
+    return i + 1;
+}
+
+// Recursive QuickSort using usage rate in descending order
+void quickSort(std::vector<Pokemon>& arr, int low, int high) {
+    if (low < high) {
+        int pivotIndex = partition(arr, low, high);
+        quickSort(arr, low, pivotIndex - 1);
+        quickSort(arr, pivotIndex + 1, high);
+    }
+}
+
+// Merge function for MergeSort
+void merge(std::vector<Pokemon>& arr, int left, int mid, int right) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    std::vector<Pokemon> L(n1), R(n2);
+
+    for (int i = 0; i < n1; ++i)
+        L[i] = arr[left + i];
+    for (int j = 0; j < n2; ++j)
+        R[j] = arr[mid + 1 + j];
+
+    int i = 0, j = 0, k = left;
+
+    while (i < n1 && j < n2) {
+        if (L[i].usage >= R[j].usage) {
+            arr[k++] = L[i++];
+        } else {
+            arr[k++] = R[j++];
+        }
+    }
+
+    while (i < n1) arr[k++] = L[i++];
+    while (j < n2) arr[k++] = R[j++];
+}
+
+// Recursive MergeSort on usage rate, descending
+void mergeSort(std::vector<Pokemon>& arr, int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+        merge(arr, left, mid, right);
+    }
+}
+
+// Maintains max-heap property for usage rate
+void heapify(std::vector<Pokemon>& arr, int n, int i) {
+    int largest = i;
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
+
+    if (left < n && arr[left].usage > arr[largest].usage)
+        largest = left;
+
+    if (right < n && arr[right].usage > arr[largest].usage)
+        largest = right;
+
+    if (largest != i) {
+        std::swap(arr[i], arr[largest]);
+        heapify(arr, n, largest);
+    }
+}
+
+// HeapSort to sort Pokémon by usage rate in descending order
+void heapSort(std::vector<Pokemon>& arr) {
+    int n = arr.size();
+
+    for (int i = n / 2 - 1; i >= 0; i--)
+        heapify(arr, n, i);
+
+    for (int i = n - 1; i > 0; i--) {
+        std::swap(arr[0], arr[i]);
+        heapify(arr, i, 0);
+    }
+
+    std::reverse(arr.begin(), arr.end());
 }
