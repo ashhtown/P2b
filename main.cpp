@@ -1,10 +1,11 @@
-#include "pokeFile.cpp"
+#include "pokeFile.h"
 #include <iostream>
 #include <string>
 #include <random>  // random_device
 #include <thread>   // sleep
 #include <chrono>   // time   -    https://cplusplus.com/reference/thread/this_thread/sleep_for/
 using namespace std;
+#include "algo1.h"
 
 int main() {
     std::random_device rand;
@@ -59,7 +60,7 @@ int main() {
             cout << "|  2 Taj Miller :)                                              |" << endl;
             cout << "|    '-> pokemon go pro                                         |" << endl;
             cout << "|  3 Brenley Jean :P                                            |" << endl;
-            cout << "|    '-> brenley jean                                           |" << endl;
+            cout << "|    '-> pokemon master                                      |" << endl;
             cout << "|                                                               |" << endl;
             cout << "|---------------------------------------------------------------|" << endl;
             this_thread::sleep_for(chrono::seconds(2));
@@ -162,6 +163,63 @@ int main() {
             cout << "|---------------------------------------------------------------|" << endl;
             cout << "   ENTER SELECTION:                                              " << endl;
             getline(cin, typeSort, '\n');
+
+            // Example: sort Pokémon by generation
+            vector<Pokemon> filtered;
+
+            // Convert filter input (generation number)
+            try {
+                int genNum = stoi(filter);
+                for (auto& p : mons) {
+                    if (p.generation == genNum) filtered.push_back(p);
+                }
+            } catch (...) {
+                filtered = mons; // fallback if input wasn't a number
+            }
+
+            if (filtered.empty()) {
+                cout << "No Pokémon found for that filter.\n";
+                continue;
+            }
+
+            // Apply chosen sorting algorithm
+            auto start = chrono::high_resolution_clock::now();
+
+            if (typeSort == "1") {
+                mergeSort(filtered, 0, filtered.size() - 1);
+                cout << "\nSorted with Merge Sort!\n";
+            } else if (typeSort == "2") {
+                quickSort(filtered, 0, filtered.size() - 1);
+                cout << "\nSorted with Quick Sort!\n";
+            } else if (typeSort == "3") {
+                heapSort(filtered);
+                cout << "\nSorted with Heap Sort!\n";
+            } else {
+                cout << "Invalid selection.\n";
+                continue;
+            }
+
+            auto end = chrono::high_resolution_clock::now();
+            auto duration = chrono::duration_cast<chrono::milliseconds>(end - start).count();
+
+            cout << "|---------------------------------------------------------------|" << endl;
+            cout << "|      TOP 10 POKÉMON BY USAGE RATE (GEN " << filter << ")       |" << endl;
+            cout << "|---------------------------------------------------------------|" << endl;
+
+            // Display top 10
+            int displayCount = min(10, (int)filtered.size());
+            for (int i = 0; i < displayCount; i++) {
+                auto& p = filtered[i];
+                cout << i + 1 << ". " << p.name
+                     << " | Type: " << p.type1;
+                if (!p.type2.empty()) cout << "/" << p.type2;
+                cout << " | Usage Rate: " << p.usage << endl;
+            }
+
+            cout << "|---------------------------------------------------------------|" << endl;
+            cout << "Sorting completed in " << duration << " ms\n";
+            cout << "|---------------------------------------------------------------|" << endl;
+
 
 
         }else if (input == "4") { // for fun

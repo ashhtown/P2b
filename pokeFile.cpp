@@ -6,44 +6,45 @@
 #include <string>
 #include <map>
 using namespace std;
+#include "pokeFile.h"
 
 // Nat,Pokemon,HP,Atk,Def,SpA,SpD,Spe,Total,Type I,Type II,Ability I,Ability II,Hidden Ability,
 // EV Worth,Gender,Egg Group I,Egg Group II,Catch,Evolve
 // 20 columns
 
-struct Pokemon {
-    //string imgURL; // http://www.serebii.net/xy/pokemon/[Pokemon.num].png  -  have to figure out how to do that in SFML :3
-    int num;
-    string name;
-    int hp;
-    int atk;
-    int def;
-    int spAtk;
-    int spDef;
-    int spd;
-    int total;
-    string type1;
-    string type2;
-    string ability1;
-    string ability2;
-    string abilityHidden;
-    string ev; // effort value
-    string gender; // "M/F (percentage)" MAYBE DON'T DISPLAY, IRRELEVANT
-    string eg1; // egg group 1 MAYBE DON'T DISPLAY, IRRELEVANT
-    string eg2; // egg group 2 MAYBE DON'T DISPLAY, IRRELEVANT
-    string catchNum; // MAYBE DONT DISPLAY, IRRELEVANT
-    string evolution; // condition/s to evolve
-    int generation;
-    string region; // first region in which it appears
-
-    // from gen[N].csv
-    //int rank;
-    double usage;
-
-    // from gen[N]moveset.csv
-    vector<string> ctWtVc, abilities, items, spreads, moveRates, teraTypes, teamRates, checksCounters;
-    vector<vector<string>> movesetData= {ctWtVc, abilities, items, spreads, moveRates, teraTypes, teamRates, checksCounters};
-};
+// struct Pokemon {
+//     //string imgURL; // http://www.serebii.net/xy/pokemon/[Pokemon.num].png  -  have to figure out how to do that in SFML :3
+//     int num;
+//     string name;
+//     int hp;
+//     int atk;
+//     int def;
+//     int spAtk;
+//     int spDef;
+//     int spd;
+//     int total;
+//     string type1;
+//     string type2;
+//     string ability1;
+//     string ability2;
+//     string abilityHidden;
+//     string ev; // effort value
+//     string gender; // "M/F (percentage)" MAYBE DON'T DISPLAY, IRRELEVANT
+//     string eg1; // egg group 1 MAYBE DON'T DISPLAY, IRRELEVANT
+//     string eg2; // egg group 2 MAYBE DON'T DISPLAY, IRRELEVANT
+//     string catchNum; // MAYBE DONT DISPLAY, IRRELEVANT
+//     string evolution; // condition/s to evolve
+//     int generation;
+//     string region; // first region in which it appears
+//
+//     // from gen[N].csv
+//     //int rank;
+//     double usage;
+//
+//     // from gen[N]moveset.csv
+//     vector<string> ctWtVc, abilities, items, spreads, moveRates, teraTypes, teamRates, checksCounters;
+//     vector<vector<string>> movesetData= {ctWtVc, abilities, items, spreads, moveRates, teraTypes, teamRates, checksCounters};
+// };
 
 map<string, double> assignUsage() { // currently gen 1 only
     map<string, double> stats; // format: <string Name, usage%]>
@@ -290,7 +291,7 @@ vector<Pokemon> readPokeFiles() {
     return Pokedex;
 }
 
-void display(vector<Pokemon>& Pokedex, string& name) {
+void display(const std::vector<Pokemon>& Pokedex, const std::string& name) {
     bool found = false;
     for (Pokemon pokemon : Pokedex) {
         if (pokemon.name == name) {

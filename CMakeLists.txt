@@ -7,4 +7,6 @@ include_directories(include)
 
 add_executable(P2b
         main.cpp
+        pokeFile.cpp
+        algo1.cpp
 )
