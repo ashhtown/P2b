@@ -50,7 +50,6 @@ map<string, double> assignUsage() { // currently gen 1 only
     vector<string> gens = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
     for (const auto& gen : gens) {
         string filename = "../data CSVs/gen" + gen + ".csv";
-        cout << filename << endl;
         ifstream usageFile(filename);
         string line, name;
         int rank;
@@ -76,12 +75,10 @@ map<string, vector<vector<string>>> readMovesetFiles() { // gen 1 only rn
     //vector<string> gens = {"9"};
     for (const auto& gen : gens) {
         string filename = "../data CSVs/POKEDATA - gen" + gen + "moveset.csv";
-        cout << filename << endl;
         ifstream movesetFile(filename);
         string line, temp; // temp fix for name issue
         int ctLines = 0;
         while (getline(movesetFile, line)) {
-            cout << "new set " << line << endl;
             // no header
             istringstream stream(line);
             string name;
@@ -91,12 +88,10 @@ map<string, vector<vector<string>>> readMovesetFiles() { // gen 1 only rn
             vector<string> ctWtVc, abilities, items, spreads, moveRates, teraTypes, teamRates, checksCounters;
 
             if (ctLines > 0) {
-                cout << "2" << temp << endl;
                 name = temp;
             }else {
                 name = line;
                 temp = name;
-                cout << "1" << temp << endl;
                 ctLines++;
                 getline(movesetFile, line, '\n');
             }
@@ -181,40 +176,32 @@ vector<Pokemon> readPokeFiles() {
 
         // read all data and assign to pokemon object
         // number
-        //cout << "num" << endl;
         getline(stream, temp, ',');
         pokemon.num = stoi(temp);
         // name
         getline(stream, pokemon.name, ',');
 
         // hp
-        //cout << "hp" << endl;
         getline(stream, temp, ',');
         pokemon.hp = stoi(temp);
         // attack
-        //cout << "atk" << endl;
         getline(stream, temp, ',');
         pokemon.atk = stoi(temp);
         // def
-        //cout << "def" << endl;
         getline(stream, temp, ',');
         pokemon.def = stoi(temp);
 
         // SP attack
-        //cout << "spA" << endl;
         getline(stream, temp, ',');
         pokemon.spAtk = stoi(temp);
         // SP def
-        //cout << "spD" << endl;
         getline(stream, temp, ',');
         pokemon.spDef = stoi(temp);
         // speed
-        //cout << "spd" << endl;
         getline(stream, temp, ',');
         pokemon.spd = stoi(temp);
 
         // total
-        //cout << "total" << endl;
         getline(stream, temp, ',');
         pokemon.total = stoi(temp);
 
