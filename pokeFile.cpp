@@ -471,3 +471,34 @@ void heapSort(std::vector<Pokemon>& arr) {
 
     std::reverse(arr.begin(), arr.end());
 }
+
+// int main() {
+//     std::vector<Pokemon> allPokemons = generateTestData();
+//
+//     // QuickSort test
+//     std::vector<Pokemon> gen1_quick = filterByGeneration(allPokemons, 1);
+//     std::cout << "Gen 1 Pokémon BEFORE QuickSort:\n";
+//     for (const auto& p : gen1_quick)
+//         std::cout << "- " << p.name << " (Usage Rate: " << p.usageRate << ")\n";
+//
+//     quickSort(gen1_quick, 0, gen1_quick.size() - 1);
+//     std::cout << "\nGen 1 Pokémon AFTER QuickSort:\n";
+//     for (const auto& p : gen1_quick)
+//         std::cout << "- " << p.name << " (Usage Rate: " << p.usageRate << ")\n";
+//
+//     // MergeSort test
+//     std::vector<Pokemon> gen1_merge = filterByGeneration(allPokemons, 1);
+//     mergeSort(gen1_merge, 0, gen1_merge.size() - 1);
+//     std::cout << "\nGen 1 Pokémon AFTER MergeSort:\n";
+//     for (const auto& p : gen1_merge)
+//         std::cout << "- " << p.name << " (Usage Rate: " << p.usageRate << ")\n";
+//
+//     // HeapSort test
+//     std::vector<Pokemon> gen1_heap = filterByGeneration(allPokemons, 1);
+//     heapSort(gen1_heap);
+//     std::cout << "\nGen 1 Pokémon AFTER HeapSort:\n";
+//     for (const auto& p : gen1_heap)
+//         std::cout << "- " << p.name << " (Usage Rate: " << p.usageRate << ")\n";
+//
+//     return 0;
+// }
