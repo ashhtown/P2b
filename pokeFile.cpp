@@ -367,14 +367,21 @@ void display(vector<Pokemon>& Pokedex, string& name) {
 }
 
 
-
-// SORTING ALGORITHMS
-
 // Filters Pokémon by generation
 std::vector<Pokemon> filterByGeneration(const std::vector<Pokemon>& all, int gen) {
     std::vector<Pokemon> result;
     for (const auto& p : all) {
         if (p.generation == gen)
+            result.push_back(p);
+    }
+    return result;
+}
+
+// Filters Pokémon by type
+std::vector<Pokemon> filterByType(const std::vector<Pokemon>& all, string type) {
+    std::vector<Pokemon> result;
+    for (const auto& p : all) {
+        if (p.type1 == type)
             result.push_back(p);
     }
     return result;

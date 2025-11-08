@@ -15,7 +15,7 @@ int main() {
     vector<string> sortRand = {"tabulating...", "analyzing data...", "sorting...", "compiling records...", "gotta sort 'em all!", "prepare for O(n)... and make it O(n^2)"};
     vector<Pokemon> mons = readPokeFiles();
     vector<string> types = {"NORMAL", "GRASS", "WATER", "FIRE", "ICE", "ELECTRIC", "FIGHTING", "FLYING", "PSYCHIC", "BUG", "POISON", "GROUND", "ROCK", "GHOST", "DRAGON", "DARK", "STEEL", "FAIRY"};
-    vector<string> regions = {"Kanto", "Johto", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola", "Galar", "Paldea"};
+    vector<string> regions = {"KANTO", "JOHTO", "HOENN", "SINNOH", "UNOVA", "KALOS", "ALOLA", "GALAR", "PALDEA"};
 
     bool searching = true;
         cout << "|---------------------------------------------------------------|" << endl;
@@ -33,7 +33,9 @@ int main() {
             cout << "|  4 - jokemon                                                  |" << endl;
             cout << "|  5 - exit                                                     |" << endl;
             cout << "|---------------------------------------------------------------|" << endl;
-            cout << "   ENTER MENU SELECTION :                                        " << endl;
+            cout << "|                                                               |" << endl;
+
+            cout << "   ENTER MENU SELECTION:  ";
             getline(cin, input, '\n');
 
         if (input == "1") { // ABOUT US
@@ -76,21 +78,25 @@ int main() {
             cout << "|---------------------------------------------------------------|" << endl;
             cout << "|  SEARCH FOR A POKEMON:                 0 - back to main menu  |" << endl;
             cout << "|                                                               |" << endl;
-            cout << "|  ENTER A NAME:                                                |" << endl;
+            cout << "|                                                               |" << endl;
+            cout << "   ENTER A NAME:  ";
             getline(cin, input, '\n');
+            if (input == "0") {
+                continue;
+            }
             cout << searchRand[rand() % 5] << endl; // displays message
             cout << "                                                                 " << endl;
             this_thread::sleep_for(chrono::seconds(2));
 
             cout << "|---------------------------------------------------------------|" << endl;
             cout << "|                                                               |" << endl;
-            display(mons, input);
+            cout << "   "; display(mons, input);
             cout << "|                                                               |" << endl;
             cout << "|---------------------------------------------------------------|" << endl;
-            continue;
         }
 
-        else if (input == "3") { // SORTING
+        else if (input == "3") {
+            // SORTING
             string filter, typeSort;
             vector<Pokemon> monsToSort;
             cout << "|---------------------------------------------------------------|" << endl;
@@ -102,17 +108,17 @@ int main() {
             cout << "|  3 - type                                                     |" << endl;
             cout << "|  4 - meta                                                     |" << endl; // uses viability ranking
             cout << "|---------------------------------------------------------------|" << endl;
-            cout << "   ENTER SELECTION:                                              " << endl;
+            cout << "|                                                               |" << endl;
+            cout << "   ENTER SELECTION:  ";
             getline(cin, input, '\n');
-            cout << sortRand[rand() % 5] << endl; // displays message
-            cout << "                                                                 " << endl;
-            this_thread::sleep_for(chrono::seconds(2));
+
             if (input == "0") {
                 continue;
             }
 
+            int filterNum = 0;
+            int regNum = 1;
             bool filtering = true;
-            int metaCT = 10;
             while (filtering) {
                 if (input == "1") {
                     cout << "|---------------------------------------------------------------|" << endl;
@@ -124,16 +130,19 @@ int main() {
                     cout << "|    GEN 4  ->  DIAMOND / PEARL  |   GEN 9 -> Z - A             |" << endl;
                     cout << "|    GEN 5  ->  BLACK / WHITE    |                              |" << endl;
                     cout << "|---------------------------------------------------------------|" << endl;
-                    cout << "   ENTER GENERATION (#):                                         " << endl;
+                    cout << "|                                                               |" << endl;
+                    cout << "   ENTER GENERATION (#):  ";
                     getline(cin, filter, '\n');
                     if (filter < "1" || filter > "9") {
                         cout << "   please enter the generation as a number 1-9!" << endl;
                         continue;
                     }
+                    filterNum = 1;
                     filtering = false;
 
                 }
                 else if (input == "2") {
+                    cout << "|---------------------------------------------------------------|" << endl;
                     cout << "|            which REGION would you like to see?                |" << endl;
                     cout << "|---------------------------------------------------------------|" << endl;
                     cout << "|          1  ->  KANTO       |      6  ->  KALOS               |" << endl;
@@ -142,26 +151,19 @@ int main() {
                     cout << "|          4  ->  SINNOH      |      9  ->  PALDEA              |" << endl;
                     cout << "|          5  ->  UNOVA       |                                 |" << endl;
                     cout << "|---------------------------------------------------------------|" << endl;
-                    cout << "   ENTER REGION NAME:                                            " << endl;
+                    cout << "|                                                               |" << endl;
+                    cout << "   ENTER REGION (#):  ";
                     getline(cin, filter, '\n');
 
-                    // check if valid region then convert input to be the same case as pokemon.region
-                    string check;
-                    for (char& c : filter) {
-                        c = static_cast<char>(toupper(c));
-                        check.push_back(c);
+                    if (filter < "1" || filter > "9") {
+                        cout << "   please enter the corresponding region number!" << endl;
+                        continue;
                     }
-                    if (find(regions.begin(), regions.end(), check) == regions.end()) {
-                        filter[0] = static_cast<char>(toupper(filter[0]));
-                        for (int i = 1; i < filter.size(); i++) {
-                            filter[i] = static_cast<char>(tolower(filter[i]));
-                        }
-                        filtering = false;
-                    }else {
-                        cout << "   please enter a valid region name!" << endl;
-                    }
+                    filterNum = 2;
+                    filtering = false;
 
                 }else if (input == "3") {
+                    cout << "|---------------------------------------------------------------|" << endl;
                     cout << "|          which pokemon TYPE would you like to see?            |" << endl;
                     cout << "|---------------------------------------------------------------|" << endl;
                     cout << "|          1  ->  NORMAL       |      10  ->  BUG               |" << endl;
@@ -174,7 +176,8 @@ int main() {
                     cout << "|          8  ->  FLYING       |      17  ->  STEEL             |" << endl;
                     cout << "|          9  ->  PSYCHIC      |      18  ->  FAIRY             |" << endl;
                     cout << "|---------------------------------------------------------------|" << endl;
-                    cout << "   ENTER TYPE NAME:                                              " << endl;
+                    cout << "|                                                               |" << endl;
+                    cout << "   ENTER TYPE NAME:  ";
                     getline(cin, filter, '\n');
 
                     // check if valid type then convert input to be the same case as pokemon.type1 or 2
@@ -183,22 +186,19 @@ int main() {
                         c = static_cast<char>(toupper(c));
                         check.push_back(c);
                     }
-                    if (find(types.begin(), types.end(), check) == types.end()) {
+                    if (find(types.begin(), types.end(), check) != types.end()) {
                         filter[0] = static_cast<char>(toupper(filter[0]));
                         for (int i = 1; i < filter.size(); i++) {
                             filter[i] = static_cast<char>(tolower(filter[i]));
                         }
+                        filterNum = 3;
                         filtering = false;
                     }else {
                         cout << "   please enter a valid pokemon type name!" << endl;
                     }
 
                 }else if (input == "4") {
-                    string temp;
-                    cout << "|           how many pokemon would you like to see?             |" << endl;
-                    cout << "|---------------------------------------------------------------|" << endl;
-                    cout << "   ENTER NUMBER:                                                 " << endl;
-                    getline(cin, temp, '\n');
+                    filterNum = 4;
                     filtering = false;
 
                 }else {
@@ -206,72 +206,212 @@ int main() {
                 }
             }
 
+            // data
+            vector<Pokemon> Pokedex = readPokeFiles();
+
             // COMPARING ALGS! FILTERED SORT  !!!!!!!!  using string filter !!!!!!!!
             cout << "|           which sorting algorithm should we use?              |" << endl;
             cout << "|---------------------------------------------------------------|" << endl;
-            cout << "|           1  ->  M E R G E  S O R T                           |" << endl;
-            cout << "|           2  ->  Q U I C K  S O R T                           |" << endl;
-            cout << "|           3  ->    H E A P  S O R T                           |" << endl;
+            cout << "|                1  ->  M E R G E  S O R T                      |" << endl;
+            cout << "|                2  ->  Q U I C K  S O R T                      |" << endl;
+            cout << "|                3  ->    H E A P  S O R T                      |" << endl;
             cout << "|---------------------------------------------------------------|" << endl;
-            cout << "   ENTER SELECTION:                                              " << endl;
+            cout << "|                                                               |" << endl;
+            cout << "   ENTER SELECTION:  ";
             getline(cin, typeSort, '\n');
 
-            // Example: sort Pokémon by generation
-            vector<Pokemon> filtered;
+            cout << sortRand[rand() % 5] << endl; // displays message
+            cout << "                                                                 " << endl;
+            this_thread::sleep_for(chrono::seconds(2));
+            if (filterNum == 1){
+                vector<Pokemon> filtered;
 
-            // Convert filter input (generation number)
-            try {
-                int genNum = stoi(filter);
-                for (auto& p : mons) {
-                    if (p.generation == genNum) filtered.push_back(p);
+                // Example: sort Pokémon by generation
+                // Convert filter input (generation number)
+                try {
+                    int genNum = stoi(filter);
+                    for (auto& p : mons) {
+                        if (p.generation == genNum) filtered.push_back(p);
+                    }
+                } catch (...) {
+                    filtered = mons; // fallback if input wasn't a number
                 }
-            } catch (...) {
-                filtered = mons; // fallback if input wasn't a number
+
+                if (filtered.empty()) {
+                    cout << "No Pokémon found for that filter.\n";
+                    continue;
+                }
+
+                // Apply chosen sorting algorithm
+                auto start = chrono::high_resolution_clock::now();
+
+                if (typeSort == "1") {
+                    mergeSort(filtered, 0, filtered.size() - 1);
+                    cout << "\nSorted with Merge Sort!\n";
+                } else if (typeSort == "2") {
+                    quickSort(filtered, 0, filtered.size() - 1);
+                    cout << "\nSorted with Quick Sort!\n";
+                } else if (typeSort == "3") {
+                    heapSort(filtered);
+                    cout << "\nSorted with Heap Sort!\n";
+                } else {
+                    cout << "Invalid selection.\n";
+                    continue;
+                }
+
+
+                auto end = chrono::high_resolution_clock::now();
+                auto duration = chrono::duration_cast<chrono::milliseconds>(end - start).count();
+
+                cout << "|---------------------------------------------------------------|" << endl;
+                cout << "          TOP 10 POKEMON BY USAGE RATE  -  GEN " << filter << endl;
+                cout << "|---------------------------------------------------------------|" << endl;
+
+                // Display top 10
+                int displayCount = min(10, (int)filtered.size());
+                for (int i = 0; i < displayCount; i++) {
+                    auto& p = filtered[i];
+                    cout << "   " << i + 1 << ". " << p.name
+                         << " | Type: " << p.type1;
+                    if (!p.type2.empty()) cout << "/" << p.type2;
+                    cout << " | Usage Rate: " << p.usage << endl;
+                }
+
+                cout << "|---------------------------------------------------------------|" << endl;
+                cout << "              Sorting completed in " << duration << " ms\n";
+                cout << "|---------------------------------------------------------------|" << endl;
+            }else if (filterNum == 2) { // region
+                vector<Pokemon> filtered = filterByGeneration(Pokedex, stoi(filter));
+
+                auto start = chrono::high_resolution_clock::now();
+
+                if (typeSort == "1") {
+                    mergeSort(filtered, 0, filtered.size() - 1);
+                    cout << "\nSorted with Merge Sort!\n";
+                } else if (typeSort == "2") {
+                    quickSort(filtered, 0, filtered.size() - 1);
+                    cout << "\nSorted with Quick Sort!\n";
+                } else if (typeSort == "3") {
+                    heapSort(filtered);
+                    cout << "\nSorted with Heap Sort!\n";
+                } else {
+                    cout << "Invalid selection.\n";
+                    continue;
+                }
+
+                auto end = chrono::high_resolution_clock::now();
+                auto duration = chrono::duration_cast<chrono::milliseconds>(end - start).count();
+
+                cout << "|---------------------------------------------------------------|" << endl;
+                cout << "            TOP 10 POKEMON BY USAGE RATE  -  " << regions[stoi(filter)-1] << endl;
+                cout << "|---------------------------------------------------------------|" << endl;
+
+                // Display top 10
+                int displayCount = min(10, (int)filtered.size());
+                for (int i = 0; i < displayCount; i++) {
+                    auto& p = filtered[i];
+                    cout << "   " << i + 1 << ". " << p.name
+                         << " | Type: " << p.type1;
+                    if (!p.type2.empty()) cout << "/" << p.type2;
+                    cout << " | Usage Rate: " << p.usage << endl;
+                }
+
+                cout << "|---------------------------------------------------------------|" << endl;
+                cout << "              Sorting completed in " << duration << " ms\n";
+                cout << "|---------------------------------------------------------------|" << endl;
             }
+            else if (filterNum == 3) { // type
+                vector<Pokemon> filtered = filterByType(Pokedex, filter);
 
-            if (filtered.empty()) {
-                cout << "No Pokémon found for that filter.\n";
-                continue;
+                auto start = chrono::high_resolution_clock::now();
+
+                if (typeSort == "1") {
+                    mergeSort(filtered, 0, filtered.size() - 1);
+                    cout << "\nSorted with Merge Sort!\n";
+                } else if (typeSort == "2") {
+                    quickSort(filtered, 0, filtered.size() - 1);
+                    cout << "\nSorted with Quick Sort!\n";
+                } else if (typeSort == "3") {
+                    heapSort(filtered);
+                    cout << "\nSorted with Heap Sort!\n";
+                } else {
+                    cout << "Invalid selection.\n";
+                    continue;
+                }
+
+                auto end = chrono::high_resolution_clock::now();
+                auto duration = chrono::duration_cast<chrono::milliseconds>(end - start).count();
+
+                string typeUpper;
+                for (char& c : filter) {
+                    c = static_cast<char>(toupper(c));
+                    typeUpper.push_back(c);
+                }
+
+                cout << "|---------------------------------------------------------------|" << endl;
+                cout << "          TOP 10 POKEMON BY USAGE RATE  -  " << typeUpper << " TYPE" << endl;
+                cout << "|---------------------------------------------------------------|" << endl;
+
+                // Display top 10
+                int displayCount = min(10, (int)filtered.size());
+                for (int i = 0; i < displayCount; i++) {
+                    auto& p = filtered[i];
+                    cout << "   " << i + 1 << ". " << p.name
+                         << " | Type: " << p.type1;
+                    if (!p.type2.empty()) cout << "/" << p.type2;
+                    cout << " | Usage Rate: " << p.usage << endl;
+                }
+
+                cout << "|---------------------------------------------------------------|" << endl;
+                cout << "              Sorting completed in " << duration << " ms\n";
+                cout << "|---------------------------------------------------------------|" << endl;
             }
+            else if (filterNum == 4) { // top 10 meta
 
-            // Apply chosen sorting algorithm
-            auto start = chrono::high_resolution_clock::now();
+                auto start = chrono::high_resolution_clock::now();
 
-            if (typeSort == "1") {
-                mergeSort(filtered, 0, filtered.size() - 1);
-                cout << "\nSorted with Merge Sort!\n";
-            } else if (typeSort == "2") {
-                quickSort(filtered, 0, filtered.size() - 1);
-                cout << "\nSorted with Quick Sort!\n";
-            } else if (typeSort == "3") {
-                heapSort(filtered);
-                cout << "\nSorted with Heap Sort!\n";
-            } else {
-                cout << "Invalid selection.\n";
-                continue;
+                if (typeSort == "1") {
+                    mergeSort(Pokedex, 0, Pokedex.size() - 1);
+                    cout << "\nSorted with Merge Sort!\n";
+                } else if (typeSort == "2") {
+                    quickSort(Pokedex, 0, Pokedex.size() - 1);
+                    cout << "\nSorted with Quick Sort!\n";
+                } else if (typeSort == "3") {
+                    heapSort(Pokedex);
+                    cout << "\nSorted with Heap Sort!\n";
+                } else {
+                    cout << "Invalid selection.\n";
+                    continue;
+                }
+
+                auto end = chrono::high_resolution_clock::now();
+                auto duration = chrono::duration_cast<chrono::milliseconds>(end - start).count();
+
+                string typeUpper;
+                for (char& c : filter) {
+                    c = static_cast<char>(toupper(c));
+                    typeUpper.push_back(c);
+                }
+
+                cout << "|---------------------------------------------------------------|" << endl;
+                cout << "          TOP 10 POKEMON BY USAGE RATE  -  OVERALL" << endl;
+                cout << "|---------------------------------------------------------------|" << endl;
+
+                // Display top 10
+                int displayCount = min(10, (int)Pokedex.size());
+                for (int i = 0; i < displayCount; i++) {
+                    auto& p = Pokedex[i];
+                    cout << "   " << i + 1 << ". " << p.name
+                         << " | " << p.type1;
+                    if (!p.type2.empty()) cout << "/" << p.type2;
+                    cout << " | Usage Rate: " << p.usage;
+                    cout << " | Gen " << p.generation << endl;
+                }
+
+                cout << "|---------------------------------------------------------------|" << endl;
+                cout << "              Sorting completed in " << duration << " ms\n";
+                cout << "|---------------------------------------------------------------|" << endl;
             }
-
-            auto end = chrono::high_resolution_clock::now();
-            auto duration = chrono::duration_cast<chrono::milliseconds>(end - start).count();
-
-            cout << "|---------------------------------------------------------------|" << endl;
-            cout << "|      TOP 10 POKÉMON BY USAGE RATE (GEN " << filter << ")       |" << endl;
-            cout << "|---------------------------------------------------------------|" << endl;
-
-            // Display top 10
-            int displayCount = min(10, (int)filtered.size());
-            for (int i = 0; i < displayCount; i++) {
-                auto& p = filtered[i];
-                cout << i + 1 << ". " << p.name
-                     << " | Type: " << p.type1;
-                if (!p.type2.empty()) cout << "/" << p.type2;
-                cout << " | Usage Rate: " << p.usage << endl;
-            }
-
-            cout << "|---------------------------------------------------------------|" << endl;
-            cout << "Sorting completed in " << duration << " ms\n";
-            cout << "|---------------------------------------------------------------|" << endl;
-
 
         }else if (input == "4") { // for fun
             cout << "|---------------------------------------------------------------|" << endl;
