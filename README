@@ -1,0 +1,9 @@
+This Project is  called the BattleDex. We, team Shiny, believe that everyone deserves the privilege to be more educated on the world of Pokemon. 
+The first thing you see when using the application would be the Menu. Here you can select between: learning how about battledex, searching for a pokemon,
+viewing the pokemon rankings, or using the jokemon feature. 
+The first option, learning about the battledex, explains exactly what the project is about while also listing the battledex team
+The second option, searching for a pokemon, allows the user to enter any pokemon of their choosing and it will list everything about that pokemon. Whether that be it's generation, type, moves, etc
+The third option, viewing pokemon rankings, allows the user to choose which top ten list they would like to see. Whether that be by type, region, generation, or even just the meta. Then they are able to choose the sorting algorithm they would like to use.
+It could be merge, quick, or heap, but regardless of the choice, the time it takes for the algorithm is shown so that the user can compare.
+The fourth option, the jokemon, sends light hearted jokes the user's way. It is just a way for the users to have a little fun in their journey
+The last and final option is the exit option where the user can end their battledex experience.
